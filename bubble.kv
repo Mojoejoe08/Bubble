@@ -1,0 +1,373 @@
+#: import utils kivy.utils
+
+
+WindowManager:
+    MainWindow:
+    CreateExamWindow:
+    QuestionnaireWindow:
+    InputQuestionWindow:
+
+<RoundedBackGoButton@Button>
+    font_size: (self.width/50)*(self.height/5)
+    color: (1,1,1,1)
+    size_hint: (.4,.9)
+    font_name: 'century gothic'
+    background_color:(0,0,0,0)
+    background_normal:''
+    canvas.before:
+        Color:
+            rgba: utils.get_color_from_hex('006b38ff')
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [18]
+
+<Label>
+    halign: 'center'
+    valign: 'middle'
+
+<LabelAtTop@Label>
+    font_size: (self.width/50)*(self.height/13)
+    color: (1,1,1,1)
+    font_name: 'century gothic'
+
+<MainWindow>:
+    name: "main"
+    BoxLayout:
+        orientation: "vertical"
+        BoxLayout: # Top Green Box
+            orientation: "vertical"
+            size_hint: (1, .08)  #position inside the Mainbox
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            LabelAtTop:
+                text: "MainMenu"
+                pos_hint:{"x":-.25,"y":.46}
+        FloatLayout:  # Center main layout
+            orientation: "vertical"
+            size_hint: 1,.84
+            Button:
+                text: "Create Exam"
+                font_size: (self.width/25)*(self.height/15)
+                color: (1,1,1,1)
+                size_hint: (.35,.1)
+                font_name: 'century gothic'
+                background_color:(0,0,0,0)
+                background_normal:''
+                canvas.before:
+                    Color:
+                        rgba: utils.get_color_from_hex('006b38ff')
+                    RoundedRectangle:
+                        size: self.size
+                        pos: self.pos
+                        radius: [18]
+                pos_hint: {'center_x':.5,'top': .56}
+                on_release:
+                    app.root.current = "createexam"
+                    root.manager.transition.direction = "left"
+            Button:
+                text: "Check Exam"
+                font_size: (self.width/25)*(self.height/15)
+                color: (1,1,1,1)
+                size_hint: (.35,.1)
+                font_name: 'century gothic'
+                background_color:(0,0,0,0)
+                background_normal:''
+                canvas.before:
+                    Color:
+                        rgba: utils.get_color_from_hex('006b38ff')
+                    RoundedRectangle:
+                        size: self.size
+                        pos: self.pos
+                        radius: [18]
+                pos_hint: {'center_x':.5,'top': .43}
+                on_release:
+                    app.root.current = "createexam"
+                    root.manager.transition.direction = "left"
+        BoxLayout:  #Bottom Go and Back Button
+            orientation: "vertical"
+            size_hint: (1, .08)
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+
+
+<CreateExamWindow>:
+    name: "createexam"
+    BoxLayout:
+        orientation: "vertical"
+        BoxLayout: # Top Green Box
+            orientation: "vertical"
+            size_hint: (1, .08)  #position inside the Mainbox
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            LabelAtTop:
+                text: "Create Exam"
+                pos_hint:{"x":-.25,"y":.46}
+        FloatLayout:
+            orientation: "vertical"
+            size_hint: 1,1
+            Label:
+                text: "No. of Questions"
+                color: (0,0,0,1)
+                font_size: self.height/25
+                pos_hint:{"center_x":0.5,"center_y":.8}
+            TextInput:
+                id: question_num
+                input_type: 'number'
+                input_filter: 'int'
+                multiline: False
+                size_hint: (.5,.08)
+                font_size: self.height/2
+                halign: 'center'
+                valign: 'middle'
+                cursor_color: (0,0,0,1)
+                pos_hint:{"center_x":0.5,"center_y":0.7}
+                on_text_validate: tech_name.focus = True
+            Label:
+                text: "Name of the Teacher"
+                color: (0,0,0,1)
+                font_size: self.height/25
+                pos_hint:{"center_x":0.5,"center_y":.6}
+            TextInput:
+                id: tech_name
+                multiline: False
+                size_hint: (.5,.08)
+                font_size: self.height/2
+                halign: 'center'
+                valign: 'middle'
+                cursor_color: (0,0,0,1)
+                pos_hint:{"center_x":0.5,"center_y":0.5}
+                write_tab: False
+                on_text_validate: subj_name.focus = True
+            Label:
+                text: "Name of the Subject"
+                color: (0,0,0,1)
+                font_size: self.height/25
+                pos_hint:{"center_x":0.5,"center_y":.4}
+            TextInput:
+                id: subj_name
+                pos_hint:{"center_x":0.5,"center_y":0.3}
+                write_tab: False
+                multiline: False
+                size_hint: (.5,.08)
+                font_size: self.height/2
+                halign: 'center'
+                valign: 'middle'
+                cursor_color: (0,0,0,1)
+                on_text_validate: root.get_val()
+
+        FloatLayout:  #Bottom Go and Back Button
+            orientation: "vertical"
+            size_hint: (1, .08)
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            RoundedBackGoButton:
+                text: "Back"
+                pos_hint: {'x':0,'y':0}
+                on_release:
+                    app.root.current = "main"
+                    root.manager.transition.direction = "right"
+            RoundedBackGoButton:
+                id: gen
+                text: "Generate"
+                pos_hint: {'x':0.55,'y':0}
+                on_press:
+                    root.get_val()
+                on_release:
+                    app.root.current = "questionnaire"
+                    root.manager.transition.direction = "left"
+
+
+<QuestionnaireWindow>:
+    name: "questionnaire"
+    BoxLayout:
+        orientation: "vertical"
+        BoxLayout: # Top Green Box
+            orientation: "vertical"
+            size_hint: (1, .08)  #position inside the Mainbox
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            LabelAtTop:
+                text: "Questionnaire"
+                pos_hint:{"x":-.18,"y":.46}
+        StackLayout:
+            size_hint: 1,.84
+            Button:
+                id: load
+                text: "Load Items"
+                size_hint: 1,.1
+                background_color: utils.get_color_from_hex('006b38ff')
+                background_normal:''
+                font_name: 'century gothic'
+                disabled: root.enable_btn
+                on_press: root.load_items()
+            ScrollView:
+                pos_hint: {'x':0, 'y': 0}
+                do_scroll_x: False
+                do_scroll_y: True
+                StackLayout:
+                    id: container
+                    size_hint: 1, None
+                    height: root.min_height
+
+
+        FloatLayout:  #Bottom Go and Back Button
+            orientation: "vertical"
+            size_hint: (1, .08)
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            RoundedBackGoButton:
+                text: "Back"
+                pos_hint: {'x':0,'y':0}
+                on_release:
+                    app.root.current = "createexam"
+                    root.manager.transition.direction = "right"
+            RoundedBackGoButton:
+                id: gen
+                text: "Generate"
+                pos_hint: {'x':0.55,'y':0}
+                on_press:
+                    root.createPdf()
+                on_release:
+                    app.root.current = "questionnaire"
+                    root.manager.transition.direction = "left"
+
+<InputQuestionWindow>:
+    id: IQW
+    name: "input_questionnaire"
+    BoxLayout:
+        orientation: "vertical"
+        BoxLayout: # Top Green Box
+            orientation: "vertical"
+            size_hint: (1, .08)  #position inside the Mainbox
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            LabelAtTop:
+                text: "Q/A Input"
+                pos_hint:{"x":-.18,"y":.46}
+        FloatLayout:
+            id: qa
+            size_hint: 1,.84
+            Label:      #Question
+                id: q
+                text: "QUESTION"
+                color: (0,0,0,1)
+                font_size: self.height/20
+                pos_hint:{"center_x":0.5,"center_y":0.95}
+            TextInput:
+                id: i
+                hint_text: "Input question here"
+                pos_hint:{"center_x":0.5,"center_y":0.85}
+                multiline: False
+                size_hint: (1,.1)
+                font_size: self.height/2
+                halign: 'left'
+                valign: 'middle'
+                cursor_color: (0,0,0,1)
+                on_text_validate: a.focus = True
+            Label:      #A
+                text: "A"
+                color: (0,0,0,1)
+                font_size: self.height/20
+                pos_hint:{"center_x":0.5,"center_y":0.75}
+            TextInput:
+                id: a
+                hint_text: "Input choices here A"
+                pos_hint:{"center_x":0.5,"center_y":0.65}
+                multiline: False
+                size_hint: (1,.1)
+                font_size: self.height/2
+                halign: 'left'
+                valign: 'middle'
+                on_text_validate: b.focus = True
+            Label:      #A
+                text: "B"
+                color: (0,0,0,1)
+                font_size: self.height/20
+                pos_hint:{"center_x":0.5,"center_y":0.55}
+            TextInput:
+                id: b
+                hint_text: "Input choices here B"
+                pos_hint:{"center_x":0.5,"center_y":0.45}
+                multiline: False
+                size_hint: (1,.1)
+                font_size: self.height/2
+                halign: 'left'
+                valign: 'middle'
+                on_text_validate: c.focus = True
+            Label:      #A
+                text: "C"
+                color: (0,0,0,1)
+                font_size: self.height/20
+                pos_hint:{"center_x":0.5,"center_y":0.35}
+            TextInput:
+                id: c
+                hint_text: "Input choices here C"
+                pos_hint:{"center_x":0.5,"center_y":0.25}
+                multiline: False
+                size_hint: (1,.1)
+                font_size: self.height/2
+                halign: 'left'
+                valign: 'middle'
+                on_text_validate: d.focus = True
+            Label:      #D
+                text: "D"
+                color: (0,0,0,1)
+                font_size: self.height/20
+                pos_hint:{"center_x":0.5,"center_y":0.15}
+            TextInput:
+                id: d
+                hint_text: "Input choices here D"
+                pos_hint:{"center_x":0.5,"center_y":0.05}
+                multiline: False
+                size_hint: (1,.1)
+                font_size: self.height/2
+                halign: 'left'
+                valign: 'middle'
+
+        FloatLayout:  #Bottom Go and Back Button
+            orientation: "vertical"
+            size_hint: (1, .08)
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            RoundedBackGoButton:
+                text: "Save"
+                pos_hint: {'x':.3,'y':0}
+                on_press:
+                    root.insert_val()
+                on_release:
+                    app.root.current = "questionnaire"
+                    root.manager.transition.direction = "right"
+
