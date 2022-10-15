@@ -2,7 +2,9 @@ from fpdf import FPDF
 import json
 
 def create():
-
+    with open('cache1.json') as f:
+        need_list = json.load(f)
+    f.close()
     pdf = FPDF('P', 'mm', 'A4')
     pdf.add_page()
     num = 2
@@ -12,8 +14,8 @@ def create():
     quest = 1
     letter = ["a. ", "b. ", "c. ", "d. "]
 
-    subj_name = "MACASA"#self.store.get('subject')['subject_name']
-    tech_name = "DCIT"#self.store.get('subject')['subject_name']
+    subj_name = need_list['subject']['subject_name']
+    tech_name = need_list['teacher']['teacher_name']
 
     with open('new_ques.json') as f:
         data = json.load(f)
