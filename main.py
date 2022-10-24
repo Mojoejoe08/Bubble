@@ -21,9 +21,12 @@ from kivy.properties import ObjectProperty, ListProperty, NumericProperty, Boole
 from kivy.storage.jsonstore import JsonStore
 from kivy.base import runTouchApp
 import sqlite3
+from kivy.uix.dropdown import DropDown
 from pdf2image import convert_from_path
 import cpdf
 from fpdf import FPDF
+
+
 
 class scrollerPage(RecycleView):
     def __init__(self, **kwargs):
@@ -32,7 +35,6 @@ class scrollerPage(RecycleView):
             queees = json.load(f)
         f.close()
         self.data = [{"text": str(x)} for x in queees]
-
 
 
 class Creating_json:
@@ -64,7 +66,6 @@ class MainWindow(Screen):
 class CheckExamWindow(Screen):
     pass
 
-
 class CreateExamWindow(Screen):
     def __init__(self, **kwargs):
         super(CreateExamWindow, self).__init__(**kwargs)
@@ -81,8 +82,6 @@ class CreateExamWindow(Screen):
             subject_name = ''
         self.store.put('teacher', teacher_name=teacher_name)
         self.store.put('subject', subject_name=subject_name)
-        print(teacher_name)
-        print(subject_name)
         # json_name = subject_name + ".json"
         with open('ques.json') as f:
             data = json.load(f)
@@ -94,8 +93,6 @@ class CreateExamWindow(Screen):
         for i in range(2, editing_ques_num + 1):
             p = Creating_json("QUESTION " + str(i), "", "", "", "", "")
             p.save_to_json('new_ques.json')
-
-    pass
 
 
 class QuestionnaireWindow(Screen):
@@ -119,7 +116,7 @@ class QuestionnaireWindow(Screen):
                 self.r.bind(on_press=partial(self.edit_question, question))
                 mini_height+=50
         f.close()
-        self.min_height = mini_height +51
+        self.min_height = mini_height
         self.enable_btn = True
 
     def edit_question(self, question, *args):
@@ -183,8 +180,6 @@ class QuestionnaireWindow(Screen):
         cpdf.convert_pdf('/Users/Administrator/PycharmProjects/AutoMark/questionnaire.pdf',
                          '/Users/Administrator/PycharmProjects/AutoMark/img/')
 
-
-
 class InputQuestionWindow(Screen):
 
     def insert_val(self):
@@ -207,7 +202,6 @@ class InputQuestionWindow(Screen):
             person_dict = json.load(f)
             person_dict[self.ques_num] = {'question': question_in, 'a': input_a, 'b': input_b, 'c': input_c,
                                      'd': input_d}
-            print(person_dict)
         with open('new_ques.json', 'w') as f:
             json.dump(person_dict, f, indent=2)
         f.close()
@@ -223,7 +217,6 @@ class PreviewQWindow(Screen):
         mini_height = 0
         with open('cache.json', 'r') as f:
             img_list = json.load(f)
-            print(img_list)
             for img in img_list:
                 self.r = Image(source=img,size_hint = (1,None),height = 550, allow_stretch=True)
                 self.ids.image_layout.canvas.add(Color(1, 1, 1))
@@ -239,8 +232,18 @@ class PreviewQWindow(Screen):
 class PreviewAWindow(Screen):
     pass
 
+class NewSetWindow(Screen):
+    def get_name_set(self,value):
+        self.name_set = value
+        print(self.name_set)
+
+    def spinner_clicked(self, value):
+        self.num_item =  value
+        print(self.num_item)
+
 class WindowManager(ScreenManager):
     pass
+
 
 kv = Builder.load_file("bubble.kv")
 
