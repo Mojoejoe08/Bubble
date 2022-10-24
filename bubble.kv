@@ -6,7 +6,8 @@ WindowManager:
     CreateExamWindow:
     QuestionnaireWindow:
     InputQuestionWindow:
-    PreviewWindow:
+    PreviewQWindow:
+    PreviewAWindow:
     CheckExamWindow:
 
 <scrollerPage>:
@@ -269,7 +270,7 @@ WindowManager:
                 on_press:
                     root.createPdf()
                 on_release:
-                    app.root.current = "preview"
+                    app.root.current = "previewQ"
                     root.manager.transition.direction = "left"
 
 <InputQuestionWindow>:
@@ -387,8 +388,8 @@ WindowManager:
                     app.root.current = "questionnaire"
                     root.manager.transition.direction = "right"
 
-<PreviewWindow>:
-    name: "preview"
+<PreviewQWindow>:
+    name: "previewQ"
     BoxLayout:
         orientation: "vertical"
         BoxLayout: # Top Green Box
@@ -401,11 +402,11 @@ WindowManager:
                     size: self.size
                     pos: self.pos
             LabelAtTop:
-                text: "Preview"
-                pos_hint:{"x":-.25,"y":.46}
+                text: "Questionnaire"
+                pos_hint:{"x":-.18,"y":.46}
         StackLayout:
             id: preview_img
-            size_hint:1,0.84
+            size_hint:1,0.74
             Button:
                 id: load
                 text: "Load Preview"
@@ -423,7 +424,34 @@ WindowManager:
                     id: image_layout
                     size_hint: 1, None
                     height: root.minn_height
-
+        FloatLayout:
+            orientation: "vertical"
+            size_hint: 1,.1
+            canvas.before:
+                Color:
+                    rgba: 1,1,1,1
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            Button:
+                text: "Answer Sheet"
+                size_hint:.4,.6
+                pos_hint: {'center_x':0.5,'center_y':.5}
+                font_size: (self.width/65)*(self.height/4.5)
+                color: (1,1,1,1)
+                font_name: 'century gothic'
+                background_color:(0,0,0,0)
+                background_normal:''
+                on_release:
+                    app.root.current = "previewA"
+                    root.manager.transition.direction = "left"
+                canvas.before:
+                    Color:
+                        rgba: utils.get_color_from_hex('006b38ff')
+                    RoundedRectangle:
+                        size: self.size
+                        pos: self.pos
+                        radius: [10]
 
         FloatLayout:  #Bottom Go and Back Button
             orientation: "vertical"
@@ -442,7 +470,77 @@ WindowManager:
                     root.manager.transition.direction = "right"
             RoundedBackGoButton:
                 id: gen
-                text: "Generate"
+                text: "Download"
+                pos_hint: {'x':0.55,'y':0}
+                on_release:
+                    app.root.current = "questionnaire"
+                    root.manager.transition.direction = "left"
+
+<PreviewAWindow>:
+    name: "previewA"
+    BoxLayout:
+        orientation: "vertical"
+        BoxLayout: # Top Green Box
+            orientation: "vertical"
+            size_hint: (1, .08)  #position inside the Mainbox
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            LabelAtTop:
+                text: "AnswerSheet"
+                pos_hint:{"x":-.25,"y":.46}
+        StackLayout:
+
+        FloatLayout:
+            orientation: "vertical"
+            size_hint: 1,.1
+            canvas.before:
+                Color:
+                    rgba: 1,1,1,1
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            Button:
+                text: "Questionnaire"
+                size_hint:.4,.6
+                pos_hint: {'center_x':0.5,'center_y':.5}
+                font_size: (self.width/65)*(self.height/4.5)
+                color: (1,1,1,1)
+                font_name: 'century gothic'
+                background_color:(0,0,0,0)
+                background_normal:''
+                canvas.before:
+                    Color:
+                        rgba: utils.get_color_from_hex('006b38ff')
+                    RoundedRectangle:
+                        size: self.size
+                        pos: self.pos
+                        radius: [10]
+                on_release:
+                    app.root.current = "previewQ"
+                    root.manager.transition.direction = "right"
+
+        FloatLayout:  #Bottom Go and Back Button
+            orientation: "vertical"
+            size_hint: (1, .08)
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            RoundedBackGoButton:
+                text: "Back"
+                pos_hint: {'x':0,'y':0}
+                on_release:
+                    app.root.current = "createexam"
+                    root.manager.transition.direction = "right"
+            RoundedBackGoButton:
+                id: gen
+                text: "Download"
                 pos_hint: {'x':0.55,'y':0}
                 on_release:
                     app.root.current = "questionnaire"
