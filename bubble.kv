@@ -6,8 +6,21 @@ WindowManager:
     CreateExamWindow:
     QuestionnaireWindow:
     InputQuestionWindow:
+    PreviewWindow:
+    CheckExamWindow:
 
-<RoundedBackGoButton@Button>
+<scrollerPage>:
+    viewclass: "Button"
+    RecycleBoxLayout:
+        padding: 30
+        spacing: 10
+        default_size:None,100
+        default_size_hint: 1, None
+        size_hint_y: None
+        height: self.minimum_height
+        orientation: "vertical"
+        background_color: 0,23/255,255,1
+<RoundedBackGoButton@Button>:
     font_size: (self.width/50)*(self.height/5)
     color: (1,1,1,1)
     size_hint: (.4,.9)
@@ -21,8 +34,10 @@ WindowManager:
             size: self.size
             pos: self.pos
             radius: [18]
+<Font>:
+    font_name: 'century gothic'
 
-<Label>
+<Label>:
     halign: 'center'
     valign: 'middle'
 
@@ -86,7 +101,7 @@ WindowManager:
                         radius: [18]
                 pos_hint: {'center_x':.5,'top': .43}
                 on_release:
-                    app.root.current = "createexam"
+                    app.root.current = "checkexam"
                     root.manager.transition.direction = "left"
         BoxLayout:  #Bottom Go and Back Button
             orientation: "vertical"
@@ -212,8 +227,9 @@ WindowManager:
                 pos_hint:{"x":-.18,"y":.46}
         StackLayout:
             size_hint: 1,.84
+            id: main_load
             Button:
-                id: load
+                id: load_items
                 text: "Load Items"
                 size_hint: 1,.1
                 background_color: utils.get_color_from_hex('006b38ff')
@@ -253,7 +269,7 @@ WindowManager:
                 on_press:
                     root.createPdf()
                 on_release:
-                    app.root.current = "questionnaire"
+                    app.root.current = "preview"
                     root.manager.transition.direction = "left"
 
 <InputQuestionWindow>:
@@ -371,3 +387,123 @@ WindowManager:
                     app.root.current = "questionnaire"
                     root.manager.transition.direction = "right"
 
+<PreviewWindow>:
+    name: "preview"
+    BoxLayout:
+        orientation: "vertical"
+        BoxLayout: # Top Green Box
+            orientation: "vertical"
+            size_hint: (1, .08)  #position inside the Mainbox
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            LabelAtTop:
+                text: "Preview"
+                pos_hint:{"x":-.25,"y":.46}
+        StackLayout:
+            id: preview_img
+            size_hint:1,0.84
+            Button:
+                id: load
+                text: "Load Preview"
+                size_hint: 1,.1
+                pos_hint:{"center_x":.5,"center_y":0.1}
+                background_color: utils.get_color_from_hex('006b38ff')
+                background_normal:''
+                font_name: 'century gothic'
+                on_press: root.img_show()
+            ScrollView:
+                pos_hint: {'x':0, 'y': 0}
+                do_scroll_x: False
+                do_scroll_y: True
+                StackLayout:
+                    id: image_layout
+                    size_hint: 1, None
+                    height: root.minn_height
+
+
+        FloatLayout:  #Bottom Go and Back Button
+            orientation: "vertical"
+            size_hint: (1, .08)
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            RoundedBackGoButton:
+                text: "Back"
+                pos_hint: {'x':0,'y':0}
+                on_release:
+                    app.root.current = "createexam"
+                    root.manager.transition.direction = "right"
+            RoundedBackGoButton:
+                id: gen
+                text: "Generate"
+                pos_hint: {'x':0.55,'y':0}
+                on_release:
+                    app.root.current = "questionnaire"
+                    root.manager.transition.direction = "left"
+
+<CheckExamWindow>:
+    name: "checkexam"
+    BoxLayout:
+        orientation: "vertical"
+        BoxLayout: # Top Green Box
+            orientation: "vertical"
+            size_hint: (1, .08)  #position inside the Mainbox
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            LabelAtTop:
+                text: "Create Exam"
+                pos_hint:{"x":-.23,"y":.46}
+
+        scrollerPage:
+        FloatLayout:
+            orientation: "vertical"
+            size_hint: 1,.1
+            canvas.before:
+                Color:
+                    rgba: 1,1,1,1
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            Button:
+                text: "+New Set"
+                size_hint:.4,.6
+                pos_hint: {'center_x':0.5,'center_y':.5}
+                font_size: (self.width/65)*(self.height/4)
+                color: (1,1,1,1)
+                font_name: 'century gothic'
+                background_color:(0,0,0,0)
+                background_normal:''
+                canvas.before:
+                    Color:
+                        rgba: utils.get_color_from_hex('006b38ff')
+                    RoundedRectangle:
+                        size: self.size
+                        pos: self.pos
+                        radius: [10]
+
+        FloatLayout:  #Bottom Go and Back Button
+            orientation: "vertical"
+            size_hint: (1, .08)
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            RoundedBackGoButton:
+                text: "Back"
+                pos_hint: {'x':.3,'y':0}
+                on_release:
+                    app.root.current = "main"
+                    root.manager.transition.direction = "right"
