@@ -346,7 +346,8 @@ class WindowManager(ScreenManager):
 kv = Builder.load_file("bubble.kv")
 
 
-class IMark(App):
+
+class Bubble(App):
     def build(self):
         Window.size = (400, 700)
         Window.clearcolor = (1, 1, 1, 1)
@@ -356,17 +357,4 @@ class IMark(App):
 
 
 if __name__ == "__main__":
-    IMark().run()
-
-
-class IMark(App):
-    def build(self):
-        Window.size = (400, 700)
-        Window.clearcolor = (1, 1, 1, 1)
-        self.size = Window.size
-        self.editing_pump = ''
-        return kv
-
-
-if __name__ == "__main__":
-    IMark().run()
+    Bubble().run()
