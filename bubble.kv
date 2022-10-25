@@ -10,10 +10,13 @@ WindowManager:
     PreviewAWindow:
     CheckExamWindow:
     NewSetWindow:
+    AnswerKeyWindow:
 
 <sp@SpinnerOption>
     background_normal: ''
-    background_color: (0 / 255, 107 / 255, 56 / 255, 1)
+    background_color: 1,1,1,1
+    color: (0,0,0,1)
+    font_size: self.height/3
 
 <scrollerPage>:
     viewclass: "Button"
@@ -628,7 +631,7 @@ WindowManager:
                     size: self.size
                     pos: self.pos
             LabelAtTop:
-                text: "Create Exam"
+                text: "New Set"
                 pos_hint:{"x":-.23,"y":.46}
         FloatLayout:
             orientation: "vertical"
@@ -645,6 +648,7 @@ WindowManager:
                 font_size: self.height/2
                 halign: 'center'
                 valign: 'middle'
+                background_color: 1,1,1,1
                 cursor_color: (0,0,0,1)
                 pos_hint:{"center_x":0.5,"center_y":0.7}
                 on_text_validate: root.get_name_set(name_set.text)
@@ -658,14 +662,21 @@ WindowManager:
                 text: "Select between 25, 50 and 75"
                 size_hint: (.5,.08)
                 font_name: 'century gothic'
-                color: (1,1,1,1)
+                color: (0,0,0,1)
                 background_normal:''
                 pos_hint:{"center_x":0.5,"center_y":0.5}
-                font_size: 13
+                font_size: 13.5
+                border: 0,0,0,1
                 values:["25","50","75"]
                 option_cls: Factory.sp
-                background_color:(0 / 255, 107 / 255, 56 / 255, 1)
+                background_color:1,1,1,1
                 on_text: root.spinner_clicked(num_item.text)
+                canvas.before:
+                    Color:
+                        rgba: 0,0,0,.5
+                    Line:    # --- adds a border --- #
+                        width: 2
+                        rectangle: self.x, self.y, self.width, self.height
 
         FloatLayout:  #Bottom Go and Back Button
             orientation: "vertical"
@@ -686,8 +697,60 @@ WindowManager:
                 id: gen
                 text: "Next"
                 pos_hint: {'x':0.55,'y':0}
+
+                on_release:
+                    app.root.current = "answerkey"
+                    root.manager.transition.direction = "left"
+
+<AnswerKeyWindow>:
+    name: "answerkey"
+    on_enter: self.load()
+    BoxLayout:
+        orientation: "vertical"
+        BoxLayout: # Top Green Box
+            orientation: "vertical"
+            size_hint: (1, .08)  #position inside the Mainbox
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            LabelAtTop:
+                text: "Answer Key"
+                pos_hint:{"x":-.25,"y":.46}
+        StackLayout:
+            id: num_bubble
+            size_hint: (1, .84)
+            ScrollView:
+                pos_hint: {'x':0, 'y': 0}
+                do_scroll_x: False
+                do_scroll_y: True
+                StackLayout:
+                    id: num_bub
+                    size_hint: 1, None
+                    height: root.min_height
+        FloatLayout:  #Bottom Go and Back Button
+            orientation: "vertical"
+            size_hint: (1, .08)
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            RoundedBackGoButton:
+                text: "Back"
+                pos_hint: {'x':0,'y':0}
+                on_release:
+                    app.root.current = "main"
+                    root.manager.transition.direction = "right"
+            RoundedBackGoButton:
+                id: gen
+                text: "Generate"
+                pos_hint: {'x':0.55,'y':0}
                 on_press:
-                    root.get_val()
+                    root.d2l()
                 on_release:
                     app.root.current = "questionnaire"
                     root.manager.transition.direction = "left"

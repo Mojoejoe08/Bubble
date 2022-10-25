@@ -6,6 +6,7 @@ from kivy.clock import Clock
 from kivy.graphics import Rectangle, Color
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
+from kivy.uix.checkbox import CheckBox
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import Image
 from kivy.uix.label import Label
@@ -233,13 +234,95 @@ class PreviewAWindow(Screen):
     pass
 
 class NewSetWindow(Screen):
+    def __init__(self, **kwargs):
+        super(NewSetWindow, self).__init__(**kwargs)
+        self.store = JsonStore('cache.json')
+
     def get_name_set(self,value):
         self.name_set = value
         print(self.name_set)
 
     def spinner_clicked(self, value):
-        self.num_item =  value
+        self.num_item =  int(value)
         print(self.num_item)
+        self.store.put('cache', num_item =self.num_item)
+
+
+
+class AnswerKeyWindow(Screen):
+    aw = {}
+    check = []
+    min_height = NumericProperty(0)
+    def load(self):
+        mini_height = 0
+        self.store = JsonStore('cache.json')
+        self.item_num = self.store.get('cache')['num_item']
+        print(self.item_num)
+
+        for i in range(self.item_num):
+            self.b = Label(text=f'{i+1}.', color=(0, 0, 0, 1),size_hint=(.2, None),height=60)
+            self.l = CheckBox(group=f'answer{i}', size_hint=(.2, None),height=60, color=(0, 0, 0, 1), active=False)
+            self.o = CheckBox(group=f'answer{i}', size_hint=(.2, None),height=60, color=(0, 0, 0, 1), active=False)
+            self.w = CheckBox(group=f'answer{i}', size_hint=(.2, None),height=60, color=(0, 0, 0, 1), active=False)
+            self.n = CheckBox(group=f'answer{i}', size_hint=(.2, None),height=60, color=(0, 0, 0, 1), active=False)
+
+            self.ids.num_bub.add_widget(self.b)
+            self.ids.num_bub.add_widget(self.l)
+            self.ids.num_bub.add_widget(self.o)
+            self.ids.num_bub.add_widget(self.w)
+            self.ids.num_bub.add_widget(self.n)
+
+            self.l.bind(active=self.on_check_Active_A)
+            self.o.bind(active=self.on_check_Active_B)
+            self.w.bind(active=self.on_check_Active_C)
+            self.n.bind(active=self.on_check_Active_D)
+            mini_height += 60
+        self.min_height = mini_height
+
+    def on_check_Active_A(self, checkboxInstance, isActive):
+        if isActive:
+            AnswerKeyWindow.check.append('a')
+            print(AnswerKeyWindow.check)
+        else:
+            AnswerKeyWindow.check.remove('a')
+
+    def on_check_Active_B(self, checkboxInstance, isActive):
+        if isActive:
+            AnswerKeyWindow.check.append('b')
+            print(AnswerKeyWindow.check)
+        else:
+            AnswerKeyWindow.check.remove('b')
+
+    def on_check_Active_C(self, checkboxInstance, isActive):
+        if isActive:
+            AnswerKeyWindow.check.append('c')
+            print(AnswerKeyWindow.check)
+        else:
+            AnswerKeyWindow.check.remove('c')
+
+    def on_check_Active_D(self, checkboxInstance, isActive):
+        if isActive:
+            AnswerKeyWindow.check.append('d')
+            print(AnswerKeyWindow.check)
+        else:
+            AnswerKeyWindow.check.remove('d')
+    def d2l(self):
+        counter = 0
+        for i in AnswerKeyWindow.check:
+            if i == 'a':
+                AnswerKeyWindow.aw[counter] = AnswerKeyWindow.aw.setdefault(counter, 0)
+            if i == 'b':
+                AnswerKeyWindow.aw[counter] = AnswerKeyWindow.aw.setdefault(counter, 1)
+            if i == 'c':
+                AnswerKeyWindow.aw[counter] = AnswerKeyWindow.aw.setdefault(counter, 2)
+            if i == 'd':
+                AnswerKeyWindow.aw[counter] = AnswerKeyWindow.aw.setdefault(counter, 3)
+            counter += 1
+        print(AnswerKeyWindow.aw)
+
+
+
+
 
 class WindowManager(ScreenManager):
     pass
