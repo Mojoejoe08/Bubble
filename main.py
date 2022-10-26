@@ -233,6 +233,7 @@ class PreviewQWindow(Screen):
 class PreviewAWindow(Screen):
     pass
 
+
 class NewSetWindow(Screen):
     def __init__(self, **kwargs):
         super(NewSetWindow, self).__init__(**kwargs)
@@ -241,11 +242,17 @@ class NewSetWindow(Screen):
     def get_name_set(self,value):
         self.name_set = value
         print(self.name_set)
+        self.store.put('setname', set_name=self.name_set)
+
 
     def spinner_clicked(self, value):
         self.num_item =  int(value)
         print(self.num_item)
-        self.store.put('cache', num_item =self.num_item)
+        self.store.put('setquan', item_quantity=self.num_item)
+
+    # def get_text_value(self):
+    #     set_name = self.ids.name_set.text
+
 
 
 
@@ -256,7 +263,7 @@ class AnswerKeyWindow(Screen):
     def load(self):
         mini_height = 0
         self.store = JsonStore('cache.json')
-        self.item_num = self.store.get('cache')['num_item']
+        self.item_num = self.store.get('setquan')['item_quantity']
         print(self.item_num)
 
         for i in range(self.item_num):
@@ -320,6 +327,34 @@ class AnswerKeyWindow(Screen):
             counter += 1
         print(AnswerKeyWindow.aw)
 
+    def insertion(self):
+
+        key = AnswerKeyWindow.check
+
+        if len(key) != 75:
+            for i in range(len(key),75):
+                key.append(f"null")
+
+
+        print(key)
+
+        self.store = JsonStore('cache.json')
+        set_quantity = self.store.get('setquan')['item_quantity']
+        set_name = self.store.get('setname')['set_name']
+
+        con = sqlite3.connect("exam_db.db")
+        c = con.cursor()
+
+        #Insert to Set Table -----------
+        set_entry = ("INSERT INTO set_tbl(set_name,set_quantity) VALUES(?,?);")
+        mydata = (set_name, set_quantity)
+        c.execute(set_entry, mydata)
+
+        #Inset to Key Table -------------
+        c.execute("INSERT INTO key_tbl('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68', '69', '70', '71', '72', '73', '74', '75') VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", key)
+        con.commit()
+        c.close()
+        con.close()
 
 
 

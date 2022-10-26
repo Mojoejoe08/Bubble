@@ -746,11 +746,12 @@ WindowManager:
                     app.root.current = "main"
                     root.manager.transition.direction = "right"
             RoundedBackGoButton:
-                id: gen
-                text: "Generate"
+                id: save
+                text: "Save"
                 pos_hint: {'x':0.55,'y':0}
                 on_press:
                     root.d2l()
+                    root.insertion()
                 on_release:
                     app.root.current = "questionnaire"
                     root.manager.transition.direction = "left"
