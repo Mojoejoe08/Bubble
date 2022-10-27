@@ -11,6 +11,7 @@ WindowManager:
     CheckExamWindow:
     NewSetWindow:
     AnswerKeyWindow:
+    StudentWindow:
 
 <sp@SpinnerOption>
     background_normal: ''
@@ -18,17 +19,6 @@ WindowManager:
     color: (0,0,0,1)
     font_size: self.height/3
 
-<scrollerPage>:
-    viewclass: "Button"
-    RecycleBoxLayout:
-        padding: 30
-        spacing: 10
-        default_size:None,100
-        default_size_hint: 1, None
-        size_hint_y: None
-        height: self.minimum_height
-        orientation: "vertical"
-        background_color: 0,23/255,255,1
 <RoundedBackGoButton@Button>:
     font_size: (self.width/50)*(self.height/5)
     color: (1,1,1,1)
@@ -54,6 +44,91 @@ WindowManager:
     font_size: (self.width/50)*(self.height/13)
     color: (1,1,1,1)
     font_name: 'century gothic'
+
+<CameraClick>:
+    id: popop
+    name: "camerawin"
+    size_hint:.8,.7
+    auto_dismiss:False
+    title:""
+    separator_height: 0
+    color: (0,0,0,1)
+    background:''
+    BoxLayout:
+        orientation: 'vertical'
+        Camera:
+            id: camera
+            size: (700,400)
+            resolution: (1500, 2000)
+            play: True
+            index: 1
+        Button:
+            text: 'Capture'
+            size_hint_y: None
+            height: '48dp'
+            on_press:
+                camera.export_to_png('/img/OMR_Sheet.png')
+                root.save_ans()
+                popop.dismiss()
+
+
+<MyPopUp>:
+    id:pop
+    size_hint:.7,.4
+    auto_dismiss:False
+    title:""
+    separator_height: 0
+    color: (0,0,0,1)
+    background:''
+    FloatLayout:
+        id: pop_up
+        Label:
+            size_hint:1,.2
+            text:"Name of the Paper"
+            font_size: (self.width/30)*(self.height/15)
+            color: (0,0,0,1)
+            pos_hint:{"center_x":.5,"center_y":.8}
+        TextInput:
+            id: std_name
+            hint_text:"shet"
+            size_hint:1,.2
+            halign: 'center'
+            valign: 'middle'
+            cursor_color: (0,0,0,1)
+            pos_hint:{"center_x":.5,"center_y":.5}
+            canvas.after:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Line:    # --- adds a border --- #
+                    width: .5
+                    rectangle: self.x, self.y, self.width, self.height
+        Button:
+            text:"Continue"
+            size_hint:1,.2
+            on_press: pop.dismiss()
+            pos_hint:{"center_x":.5,"center_y":.1}
+            background_color:(0,0,0,0)
+            background_normal:''
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            on_press:
+                root.std_save(std_name.text)
+                pop.dismiss()
+            on_release:
+                root.btnn()
+
+        Button: #Exit Button
+            background_normal: 'exit.png'
+            background_down: 'exit.png'
+            size_hint:.3,.3
+            pos_hint:{"center_x":.94,"center_y":1.03}
+            on_press: pop.dismiss()
+
+
 
 <MainWindow>:
     name: "main"
@@ -147,18 +222,26 @@ WindowManager:
                 color: (0,0,0,1)
                 font_size: self.height/25
                 pos_hint:{"center_x":0.5,"center_y":.8}
-            TextInput:
+            Spinner:
                 id: question_num
-                input_type: 'number'
-                input_filter: 'int'
-                multiline: False
+                text: "Select between 25, 50 and 75"
                 size_hint: (.5,.08)
-                font_size: self.height/2
-                halign: 'center'
-                valign: 'middle'
-                cursor_color: (0,0,0,1)
+                font_name: 'century gothic'
+                color: (0,0,0,1)
+                background_normal:''
                 pos_hint:{"center_x":0.5,"center_y":0.7}
-                on_text_validate: tech_name.focus = True
+                font_size: 13
+                border: 0,0,0,1
+                values:["25","50","75"]
+                option_cls: Factory.sp
+                background_color:1,1,1,1
+                on_text: question_num.text
+                canvas.before:
+                    Color:
+                        rgba: 0,0,0,.5
+                    Line:    # --- adds a border --- #
+                        width: 2
+                        rectangle: self.x, self.y, self.width, self.height
             Label:
                 text: "Name of the Teacher"
                 color: (0,0,0,1)
@@ -220,6 +303,7 @@ WindowManager:
 
 <QuestionnaireWindow>:
     name: "questionnaire"
+    on_enter: root.load_items()
     BoxLayout:
         orientation: "vertical"
         BoxLayout: # Top Green Box
@@ -237,15 +321,6 @@ WindowManager:
         StackLayout:
             size_hint: 1,.84
             id: main_load
-            Button:
-                id: load_items
-                text: "Load Items"
-                size_hint: 1,.1
-                background_color: utils.get_color_from_hex('006b38ff')
-                background_normal:''
-                font_name: 'century gothic'
-                disabled: root.enable_btn
-                on_press: root.load_items()
             ScrollView:
                 pos_hint: {'x':0, 'y': 0}
                 do_scroll_x: False
@@ -397,6 +472,7 @@ WindowManager:
 
 <PreviewQWindow>:
     name: "previewQ"
+    on_pre_enter: root.img_show()
     BoxLayout:
         orientation: "vertical"
         BoxLayout: # Top Green Box
@@ -414,15 +490,6 @@ WindowManager:
         StackLayout:
             id: preview_img
             size_hint:1,0.74
-            Button:
-                id: load
-                text: "Load Preview"
-                size_hint: 1,.1
-                pos_hint:{"center_x":.5,"center_y":0.1}
-                background_color: utils.get_color_from_hex('006b38ff')
-                background_normal:''
-                font_name: 'century gothic'
-                on_press: root.img_show()
             ScrollView:
                 pos_hint: {'x':0, 'y': 0}
                 do_scroll_x: False
@@ -556,6 +623,7 @@ WindowManager:
 
 <CheckExamWindow>:
     name: "checkexam"
+    on_pre_enter: root.set_btn()
     BoxLayout:
         orientation: "vertical"
         BoxLayout: # Top Green Box
@@ -571,7 +639,25 @@ WindowManager:
                 text: "Create Exam"
                 pos_hint:{"x":-.23,"y":.46}
 
-        scrollerPage:
+        FloatLayout:
+            size_hint: 1,.1
+            Button:
+                id: search
+                text: "Search"
+                size_hint: .3,.3
+                pos_hint:{"center_x":.5,"center_y":.5}
+        StackLayout:
+            size_hint: 1,.64
+            id: check_exam
+            ScrollView:
+                pos_hint: {'x':0, 'y': 0}
+                do_scroll_x: False
+                do_scroll_y: True
+                StackLayout:
+                    id: check_exam_container
+                    size_hint: 1, None
+                    padding: (self.width/10,0,self.width/10,0)
+                    height: root.min_height
         FloatLayout:
             orientation: "vertical"
             size_hint: 1,.1
@@ -651,7 +737,6 @@ WindowManager:
                 background_color: 1,1,1,1
                 cursor_color: (0,0,0,1)
                 pos_hint:{"center_x":0.5,"center_y":0.7}
-                on_text_validate: root.get_name_set(name_set.text)
             Label:
                 text: "Number of Items"
                 color: (0,0,0,1)
@@ -670,7 +755,6 @@ WindowManager:
                 values:["25","50","75"]
                 option_cls: Factory.sp
                 background_color:1,1,1,1
-                on_text: root.spinner_clicked(num_item.text)
                 canvas.before:
                     Color:
                         rgba: 0,0,0,.5
@@ -697,7 +781,7 @@ WindowManager:
                 id: gen
                 text: "Next"
                 pos_hint: {'x':0.55,'y':0}
-
+                on_press: root.set_tbl_save()
                 on_release:
                     app.root.current = "answerkey"
                     root.manager.transition.direction = "left"
@@ -746,12 +830,76 @@ WindowManager:
                     app.root.current = "main"
                     root.manager.transition.direction = "right"
             RoundedBackGoButton:
-                id: save
+                id: gen
                 text: "Save"
                 pos_hint: {'x':0.55,'y':0}
                 on_press:
                     root.d2l()
-                    root.insertion()
+                on_release:
+                    app.root.current = "studentdata"
+                    root.manager.transition.direction = "left"
+
+<StudentWindow>:
+    name: "studentdata"
+    BoxLayout:
+        orientation: "vertical"
+        BoxLayout: # Top Green Box
+            orientation: "vertical"
+            size_hint: (1, .08)  #position inside the Mainbox
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            LabelAtTop:
+                text: "New Set Name"
+                pos_hint:{"x":-.18,"y":.46}
+        RelativeLayout:
+            id: capture
+            size_hint: (1, .3)
+            Button:
+                id: capture_image
+                size_hint:.3,.5
+                pos_hint: {'center_x':0.5,'center_y':.5}
+                font_size: (self.width/65)*(self.height/4)
+                color: (1,1,1,1)
+                font_name: 'century gothic'
+                background_normal:'camera.png'
+                on_press:
+                    root.btn()
+
+            Label:
+                text:"Capture Paper"
+                size_hint:.5,.3
+                color: (0,0,0,1)
+                font_name: 'century gothic'
+                font_size: (self.width/100)*(self.height/5)
+                pos_hint: {'center_x':0.5,'center_y':.1}
+                bold: True
+        StackLayout:
+            id: capture
+            size_hint: (1, .54)
+        FloatLayout:  #Bottom Go and Back Button
+            orientation: "vertical"
+            size_hint: (1, .08)
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex('006b38ff')
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            RoundedBackGoButton:
+                text: "Back"
+                pos_hint: {'x':0,'y':0}
+                on_release:
+                    app.root.current = "main"
+                    root.manager.transition.direction = "right"
+            RoundedBackGoButton:
+                id: gen
+                text: "Save"
+                pos_hint: {'x':0.55,'y':0}
                 on_release:
                     app.root.current = "questionnaire"
                     root.manager.transition.direction = "left"
+
