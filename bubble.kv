@@ -59,6 +59,7 @@ WindowManager:
         Camera:
             id: camera
             size: (700,400)
+            orientation: 'vertical'
             resolution: (1500, 2000)
             play: True
             index: 1
@@ -67,7 +68,7 @@ WindowManager:
             size_hint_y: None
             height: '48dp'
             on_press:
-                camera.export_to_png('/img/OMR_Sheet.png')
+                camera.export_to_png('OMR_Sheet.png')
                 root.save_ans()
                 popop.dismiss()
 
@@ -213,10 +214,10 @@ WindowManager:
                     pos: self.pos
             LabelAtTop:
                 text: "Create Exam"
-                pos_hint:{"x":-.25,"y":.46}
+                pos_hint:{"x":-.18,"y":.46}
         FloatLayout:
             orientation: "vertical"
-            size_hint: 1,1
+            size_hint: 1,.84
             Label:
                 text: "No. of Questions"
                 color: (0,0,0,1)
@@ -358,6 +359,7 @@ WindowManager:
 <InputQuestionWindow>:
     id: IQW
     name: "input_questionnaire"
+    on_enter: root.load_inputs()
     BoxLayout:
         orientation: "vertical"
         BoxLayout: # Top Green Box
@@ -371,18 +373,17 @@ WindowManager:
                     pos: self.pos
             LabelAtTop:
                 text: "Q/A Input"
-                pos_hint:{"x":-.18,"y":.46}
+                pos_hint:{"x":-.25,"y":.46}
         FloatLayout:
             id: qa
             size_hint: 1,.84
             Label:      #Question
-                id: q
                 text: "QUESTION"
                 color: (0,0,0,1)
                 font_size: self.height/20
                 pos_hint:{"center_x":0.5,"center_y":0.95}
             TextInput:
-                id: i
+                id: q
                 hint_text: "Input question here"
                 pos_hint:{"center_x":0.5,"center_y":0.85}
                 multiline: False

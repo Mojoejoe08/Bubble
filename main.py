@@ -1,8 +1,9 @@
 import imutils
 import kivy
+from kivy.uix.actionbar import ActionButton
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.relativelayout import RelativeLayout
-kivy.require('1.9.0')
+
 import cv2
 from imutils.perspective import four_point_transform
 from imutils import contours
@@ -26,7 +27,7 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.stacklayout import StackLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.behaviors.focus import FocusBehavior
-from kivy.properties import ObjectProperty, ListProperty, NumericProperty, BooleanProperty
+from kivy.properties import ObjectProperty, ListProperty, NumericProperty, BooleanProperty, StringProperty
 from kivy.storage.jsonstore import JsonStore
 from kivy.base import runTouchApp
 import sqlite3
@@ -36,6 +37,7 @@ import cpdf
 from fpdf import FPDF
 from kivy.uix.popup import Popup
 from kivy.config import Config
+kivy.require('1.9.0')
 Config.set('graphics', 'resizable', True)
 
 class MyPopUp(Popup):
@@ -92,13 +94,13 @@ class CheckExamWindow(Screen):
         con.close()
 
         for name in show_set_name:
-            self.r = Button(text=str(name), text_size= (self.width+80, self.height+80),font_size=(self.width/80)*(self.height/5), size_hint=(.6, None), height=50,
+            self.r = Button(text=str(name), text_size= (self.width+80, self.height+80),font_size=(self.width/80)*(self.height/5), size_hint=(.6, None), height=60,
                                 font_name='century gothic', color=(1, 1, 1, 1),
                                 background_color=(0 / 255, 107 / 255, 56 / 255, 1), background_normal='',halign='left')
-            self.b = Button( text_size=self.size, size_hint=(.2, None), height=50,
-                            font_name='century gothic', background_normal='itemanalysis_icon1.png')
-            self.a = Button( text_size=self.size, size_hint=(.2, None), height=50,
-                            font_name='century gothic', background_normal='trash_icon1.png')
+            self.b = Button(text_size=self.size, size_hint=(.2, None), height=60,
+                            font_name='century gothic', background_normal='512px itemanalysis.png')
+            self.a = Button( text_size=self.size, size_hint=(.2, None), height=60,
+                            font_name='century gothic', background_normal='512px trash (1).png')
             self.ids.check_exam_container.add_widget(self.r)
             self.ids.check_exam_container.add_widget(self.b)
             self.ids.check_exam_container.add_widget(self.a)
@@ -138,7 +140,6 @@ class CreateExamWindow(Screen):
 class QuestionnaireWindow(Screen):
     count = 1
     min_height = NumericProperty(0)
-
     def load_items(self):
         mini_height = 0
         # self.ids.main_load.remove_widget(self.ids.load_items)
@@ -146,8 +147,9 @@ class QuestionnaireWindow(Screen):
             ques_list = json.load(f)
             for question in ques_list:
                 self.r = Button(text=str(question), text_size=self.size, size_hint=(1, None),height= 50,
-                                font_name='century gothic', color=(0, 0, 0, 1),
-                                background_color=(0 / 255, 107 / 255, 56 / 255, 1), background_normal='')
+                                font_name='century gothic', color=(0, 0, 0, 1), background_normal='',state='down')
+                self.r.id = question
+                self.r.background_color = (0 / 255, 107 / 255, 56 / 255, 1)
                 self.ids.container.add_widget(self.r)
                 self.r.bind(on_press=partial(self.edit_question, question))
                 mini_height+=50
@@ -217,10 +219,29 @@ class QuestionnaireWindow(Screen):
                          '/Users/Administrator/PycharmProjects/AutoMark/img/')
 
 class InputQuestionWindow(Screen):
+    def load_inputs(self):
+        self.store = JsonStore('cache.json')
+        self.ques_num = self.store.get('cache')['editing_que']
+        self.store = JsonStore('new_ques.json')
+        question = self.store.get(f'{self.ques_num}')['question']
+        letter_A = self.store.get(f'{self.ques_num}')['a']
+        letter_B = self.store.get(f'{self.ques_num}')['b']
+        letter_C = self.store.get(f'{self.ques_num}')['c']
+        letter_D = self.store.get(f'{self.ques_num}')['d']
+        if question != '':
+            self.ids.q.text = question
+        if letter_A != '':
+            self.ids.a.text = letter_A
+        if letter_B != '':
+            self.ids.b.text = letter_B
+        if letter_C != '':
+            self.ids.c.text = letter_C
+        if letter_D != '':
+            self.ids.d.text = letter_D
 
     def insert_val(self):
         try:
-            question_in = str(self.ids.i.text)
+            question_in = str(self.ids.q.text)
             input_a = str(self.ids.a.text)
             input_b = str(self.ids.b.text)
             input_c = str(self.ids.c.text)
@@ -241,7 +262,7 @@ class InputQuestionWindow(Screen):
         with open('new_ques.json', 'w') as f:
             json.dump(person_dict, f, indent=2)
         f.close()
-        self.ids.i.text = ""
+        self.ids.q.text = ""
         self.ids.a.text = ""
         self.ids.b.text = ""
         self.ids.c.text = ""
